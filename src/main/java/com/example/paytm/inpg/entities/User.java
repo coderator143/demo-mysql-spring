@@ -1,27 +1,26 @@
 package com.example.paytm.inpg.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class User {
 
     private int id;
-    private String userName, firstName, lastName, emailID, address1, address2;
-    private long mobileNumber;
+    private String username, firstname, lastname, emailid, address1, address2;
+    private long mobilenumber;
 
-    public User(int id, String userName, String firstName, String lastName, String emailID, String address1,
-                String address2, long mobileNumber) {
+    public User() {}
+
+    public User(int id, String username, String firstname, String lastname, String emailid, String address1,
+                String address2, long mobilenumber) {
         this.id = id;
-        this.userName = userName;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.emailID = emailID;
+        this.username = username;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.emailid = emailid;
         this.address1 = address1;
         this.address2 = address2;
-        this.mobileNumber = mobileNumber;
+        this.mobilenumber = mobilenumber;
     }
 
     @Id
@@ -34,36 +33,36 @@ public class User {
         this.id = id;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
-    public String getEmailID() {
-        return emailID;
+    public String getEmailid() {
+        return emailid;
     }
 
-    public void setEmailID(String emailID) {
-        this.emailID = emailID;
+    public void setEmailid(String emailid) {
+        this.emailid = emailid;
     }
 
     public String getAddress1() {
@@ -82,11 +81,11 @@ public class User {
         this.address2 = address2;
     }
 
-    public long getMobileNumber() {
-        return mobileNumber;
+    public long getMobilenumber() {
+        return mobilenumber;
     }
 
-    public void setMobileNumber(long mobileNumber) {
-        this.mobileNumber = mobileNumber;
+    public void setMobilenumber(long mobilenumber) {
+        this.mobilenumber = mobilenumber;
     }
 }
