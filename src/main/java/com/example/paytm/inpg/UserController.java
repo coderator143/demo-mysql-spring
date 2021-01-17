@@ -20,8 +20,8 @@ public class UserController {
         return userService.listAll();
     }
 
-    @GetMapping("/user/{id}")
-    public ResponseEntity<User> get(@PathVariable Integer id) {
+    @GetMapping(value = "/user", params = "userId")
+    public ResponseEntity<User> get(@RequestParam("userId") Integer id) {
         try {
             User user = userService.get(id);
             return new ResponseEntity<User>(user, HttpStatus.OK);
