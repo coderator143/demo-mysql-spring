@@ -1,5 +1,11 @@
 package com.example.paytm.inpg.entities;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class User {
 
     private int id;
@@ -18,6 +24,8 @@ public class User {
         this.mobileNumber = mobileNumber;
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
     }
