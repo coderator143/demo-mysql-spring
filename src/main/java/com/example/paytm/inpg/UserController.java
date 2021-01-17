@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.NoSuchElementException;
+
 // this class is user for handling requests for Restful web services
 @RestController
 public class UserController {
@@ -34,5 +35,17 @@ public class UserController {
     @PostMapping("/user")
     public void add(@RequestBody User user) {
         userService.save(user);
+    }
+
+    @PutMapping(value = "/user", params = "userId")
+    public ResponseEntity<?> update(@RequestBody User user, @RequestParam("userId") Integer id) {
+        try {
+            User existingUser = userService.get(id);
+            userService.save(user);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
