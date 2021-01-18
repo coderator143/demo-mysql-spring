@@ -1,4 +1,4 @@
-package com.example.paytm.inpg;
+package com.example.paytm.inpg.controller;
 
 import com.example.paytm.inpg.entities.User;
 import com.example.paytm.inpg.services.UserService;
@@ -7,10 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.NoSuchElementException;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.OK;
 
-// this class is user for handling requests for Restful web services
+import static org.springframework.http.HttpStatus.*;
+
 @RestController
 public class UserController {
 
@@ -34,8 +33,14 @@ public class UserController {
     }
 
     @PostMapping("/user")
-    public void add(@RequestBody User user) {
+    public String add(@RequestBody User user) {
+        List<User> user_email = userService.findByEmailID(user.getEmailid());
+        List<User> user_username = userService.findbyUserName(user.getUsername());
+        List<User> user_mobile_number = userService.findbyMobileNumber(user.getMobilenumber());
+        if(!user_email.isEmpty() || !user_username.isEmpty() || !user_mobile_number.isEmpty())
+            return "User with same emailID already exists";
         userService.save(user);
+        return "User saved";
     }
 
     @PutMapping(value = "/user", params = "userId")

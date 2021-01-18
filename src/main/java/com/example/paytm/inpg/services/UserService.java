@@ -19,4 +19,12 @@ public class UserService {
     public User get(Integer id) { return userRepository.findById(id).get(); }
 
     public void delete(Integer id) { userRepository.deleteById(id); }
+
+    public List<User> findByEmailID(String emailid) { return userRepository.findByEmailid(emailid); }
+
+    public List<User> findbyUserName(String username) { return userRepository.findByUsername(username); }
+
+    public List<User> findbyMobileNumber(long mobilenumber) {
+        return userRepository.findByMobilenumber(mobilenumber);
+    }
 }
