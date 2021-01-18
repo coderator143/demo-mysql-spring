@@ -7,15 +7,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.NoSuchElementException;
-
 import static org.springframework.http.HttpStatus.*;
 
+// controller class for accepting HTTP Requests
 @RestController
 public class UserController {
 
     @Autowired
     private UserService userService;
 
+    // basically calling CRUD methods of the service class and specifying the response to return
     @GetMapping("/user")
     public List<User> list() {
         return userService.listAll();

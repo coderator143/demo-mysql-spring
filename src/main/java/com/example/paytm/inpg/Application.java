@@ -5,9 +5,9 @@ import com.example.paytm.inpg.services.UserRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-
 import java.util.List;
 
+// used for running our spring boot application
 @SpringBootApplication
 public class Application {
 	public static void main(String[] args) {

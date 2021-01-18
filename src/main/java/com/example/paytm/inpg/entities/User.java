@@ -2,6 +2,7 @@ package com.example.paytm.inpg.entities;
 
 import javax.persistence.*;
 
+// User entity for user table
 @Entity
 public class User {
 
