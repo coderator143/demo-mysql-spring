@@ -5,19 +5,19 @@ import com.example.paytm.inpg.services.UserService;
 
 public class PostValidator {
 
-    public boolean isEmailValidated(String emailID, UserService userService) {
+    public static boolean isEmailValidated(String emailID, UserService userService) {
         return userService.findByEmailID(emailID).isEmpty();
     }
 
-    public boolean isUserNameValidated(String username, UserService userService) {
+    public static boolean isUserNameValidated(String username, UserService userService) {
         return userService.findbyUserName(username).isEmpty();
     }
 
-    public boolean isMobileNumberValidated(long mobileNumber, UserService userService) {
+    public static boolean isMobileNumberValidated(long mobileNumber, UserService userService) {
         return userService.findbyMobileNumber(mobileNumber).isEmpty();
     }
 
-    public String postResponseMessage(User user, UserService userService) {
+    public static String postResponseMessage(User user, UserService userService) {
         if(!isEmailValidated(user.getEmailid(), userService))
             return "User with an identical email already exists";
         else if(!isUserNameValidated(user.getUsername(), userService))

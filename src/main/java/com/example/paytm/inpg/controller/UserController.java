@@ -3,6 +3,7 @@ package com.example.paytm.inpg.controller;
 import com.example.paytm.inpg.entities.User;
 import com.example.paytm.inpg.services.UserService;
 import helpers.PostValidator;
+import helpers.PutValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    private PostValidator postValidator = new PostValidator();
 
     // basically calling CRUD methods of the service class and specifying the response to return
     @GetMapping("/user")
@@ -36,17 +36,19 @@ public class UserController {
     }
 
     @PostMapping("/user")
-    public String add(@RequestBody User user) {
-        String msg = postValidator.postResponseMessage(user, userService);
-        if(msg != "") return msg;
+    public ResponseEntity<?> add(@RequestBody User user) {
+        String msg = PostValidator.postResponseMessage(user, userService);
+        if(msg != "") return new ResponseEntity<>(msg, CONFLICT);
         userService.save(user);
-        return "User saved";
+        return new ResponseEntity<>("User saved with id = "+user.getId(), OK);
     }
 
     @PutMapping(value = "/user", params = "userId")
     public ResponseEntity<?> update(@RequestBody User user, @RequestParam("userId") Integer id) {
         try {
             User existingUser = userService.get(id);
+            if(!PutValidator.canBeUpdated(user, existingUser))
+                return new ResponseEntity<>("Only email and address can be updated", BAD_REQUEST);
             userService.save(user);
             return new ResponseEntity<>(OK);
         }
