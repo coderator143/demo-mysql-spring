@@ -1,4 +1,4 @@
-package helpers;
+package com.example.paytm.inpg.helpers;
 
 import com.example.paytm.inpg.entities.User;
 
