@@ -1,4 +1,4 @@
-package com.example.paytm.inpg.services;
+package com.example.paytm.inpg.repositories;
 
 import com.example.paytm.inpg.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;

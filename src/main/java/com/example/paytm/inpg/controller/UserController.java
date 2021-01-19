@@ -2,6 +2,7 @@ package com.example.paytm.inpg.controller;
 
 import com.example.paytm.inpg.entities.User;
 import com.example.paytm.inpg.services.UserService;
+import helpers.PostValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    private PostValidator postValidator = new PostValidator();
 
     // basically calling CRUD methods of the service class and specifying the response to return
     @GetMapping("/user")
@@ -35,11 +37,8 @@ public class UserController {
 
     @PostMapping("/user")
     public String add(@RequestBody User user) {
-        List<User> user_email = userService.findByEmailID(user.getEmailid());
-        List<User> user_username = userService.findbyUserName(user.getUsername());
-        List<User> user_mobile_number = userService.findbyMobileNumber(user.getMobilenumber());
-        if(!user_email.isEmpty() || !user_username.isEmpty() || !user_mobile_number.isEmpty())
-            return "User with same emailID already exists";
+        String msg = postValidator.postResponseMessage(user, userService);
+        if(msg != "") return msg;
         userService.save(user);
         return "User saved";
     }
