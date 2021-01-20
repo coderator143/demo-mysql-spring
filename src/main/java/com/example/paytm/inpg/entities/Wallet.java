@@ -1,5 +1,7 @@
 package com.example.paytm.inpg.entities;
 
+import net.bytebuddy.implementation.bind.annotation.Default;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,19 +11,19 @@ import javax.persistence.Id;
 public class Wallet {
 
     private int id, balance, owner;
-    private String creation_time;
+    private String creation;
 
     public Wallet() {}
 
-    public Wallet(int id, int balance, int owner, String creation_time) {
+    public Wallet(int id, int balance, int owner, String creation) {
         this.id = id;
         this.balance = balance;
         this.owner = owner;
-        this.creation_time = creation_time;
+        this.creation = creation;
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
     }
@@ -46,11 +48,11 @@ public class Wallet {
         this.owner = owner;
     }
 
-    public String getCreation_time() {
-        return creation_time;
+    public String getCreation() {
+        return creation;
     }
 
-    public void setCreation_time(String creation_time) {
-        this.creation_time = creation_time;
+    public void setCreation(String creation) {
+        this.creation = creation;
     }
 }
