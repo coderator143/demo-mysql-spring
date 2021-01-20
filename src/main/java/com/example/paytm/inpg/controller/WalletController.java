@@ -8,10 +8,12 @@ import com.example.paytm.inpg.services.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,6 +29,12 @@ public class WalletController {
     private UserService userService;
     private Logger logger = Logger.getLogger(this.getClass().getName());
 
+    @GetMapping("/wallet")
+    public List<Wallet> list() {
+        logger.log(Level.INFO, "list of all wallets returned");
+        return walletService.listAll();
+    }
+
     @PostMapping("/wallet")
     public ResponseEntity<?> add(@RequestBody User userBody) {
         long mobileNumber = userBody.getMobilenumber();
@@ -36,8 +44,11 @@ public class WalletController {
         }
         User user = userService.findbyMobileNumber(mobileNumber).get(0);
         user.setHaswallet(true);
-        String date_created = UtilityMethods.get_current_time();
-        Wallet wallet = new Wallet(1, 0, user.getId(), date_created);
+        Wallet wallet = new Wallet();
+        wallet.setBalance(0);
+        wallet.setCreation(UtilityMethods.get_current_time());
+        wallet.setOwner(user.getId());
+        logger.log(Level.INFO, "Wallet created with an id = "+wallet.getId());
         userService.save(user);
         walletService.save(wallet);
         return new ResponseEntity<>(OK);
