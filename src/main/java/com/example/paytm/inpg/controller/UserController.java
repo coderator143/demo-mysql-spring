@@ -86,4 +86,11 @@ public class UserController {
             return new ResponseEntity<>(NOT_FOUND);
         }
     }
+
+    @DeleteMapping(value = "/user")
+    public ResponseEntity<?> deleteAll() {
+        logger.log(Level.INFO, "all users deleted");
+        userService.deleteAll();
+        return new ResponseEntity<>(OK);
+    }
 }

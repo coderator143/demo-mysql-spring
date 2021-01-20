@@ -22,6 +22,8 @@ public class UserService {
 
     public void delete(Integer id) { userRepository.deleteById(id); }
 
+    public void deleteAll() { userRepository.deleteAll(); }
+
     public List<User> findByEmailID(String emailid) { return userRepository.findByEmailid(emailid); }
 
     public List<User> findbyUserName(String username) { return userRepository.findByUsername(username); }
