@@ -8,14 +8,15 @@ import javax.persistence.Id;
 @Entity
 public class Transaction {
 
-    private int id, with, amount, user;
-    private String mode, status, time;
+    private int id, withuser, amount, user;
+    private String mode, status;
+    private long time;
 
     public Transaction() {}
 
-    public Transaction(int id, int user, int with, int amount, String mode, String status, String time) {
+    public Transaction(int id, int withuser, String mode, String status, int amount, long time, int user) {
         this.id = id;
-        this.with = with;
+        this.withuser = withuser;
         this.amount = amount;
         this.mode = mode;
         this.status = status;
@@ -33,12 +34,12 @@ public class Transaction {
         this.id = id;
     }
 
-    public int getWith() {
-        return with;
+    public int getWithuser() {
+        return withuser;
     }
 
-    public void setWith(int with) {
-        this.with = with;
+    public void setWithuser(int withuser) {
+        this.withuser = withuser;
     }
 
     public int getAmount() {
@@ -65,11 +66,11 @@ public class Transaction {
         this.status = status;
     }
 
-    public String getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(long time) {
         this.time = time;
     }
 
