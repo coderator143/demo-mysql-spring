@@ -68,20 +68,15 @@ public class WalletController {
     @PutMapping(value = "/wallet", params = "userId")
     public ResponseEntity<?> addBalanceByUserID(@RequestParam("userId") Integer id,
                                                 @RequestBody Wallet balanceWallet) {
-        Wallet wallet = walletService.findByOwnerID(id).get(0);
+        List<Wallet> wallets = walletService.findByOwnerID(id);
+        if(wallets.isEmpty()) {
+            logger.log(Level.INFO, "Wrong user ID or user hasn't created a wallet");
+            return new ResponseEntity<>(BAD_REQUEST);
+        }
+        Wallet wallet = wallets.get(0);
         wallet.setBalance(wallet.getBalance() + balanceWallet.getBalance());
         logger.log(Level.INFO, "Balance of "+balanceWallet.getBalance()+" added");
         walletService.save(wallet);
         return new ResponseEntity<>(OK);
     }
-
-//    @PutMapping(value = "/wallet", params = "walletId")
-//    public ResponseEntity<?> addBalanceByWalletID(@RequestParam("walletId") Integer id,
-//                                                @RequestBody Wallet balanceWallet) {
-//        Wallet wallet = walletService.findByOwnerID(id).get(0);
-//        wallet.setBalance(wallet.getBalance() + balanceWallet.getBalance());
-//        logger.log(Level.INFO, "Balance of "+balanceWallet.getBalance()+" added");
-//        walletService.save(wallet);
-//        return new ResponseEntity<>(OK);
-//    }
 }
