@@ -8,17 +8,14 @@ import com.example.paytm.inpg.services.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 public class WalletController {
@@ -33,6 +30,20 @@ public class WalletController {
     public List<Wallet> list() {
         logger.log(Level.INFO, "list of all wallets returned");
         return walletService.listAll();
+    }
+
+    @GetMapping(value = "/wallet", params = "walletId")
+    public ResponseEntity<Wallet> get(@RequestParam("walletId") Integer id) {
+        try {
+            Wallet wallet = walletService.get(id);
+            ResponseEntity<Wallet> r = new ResponseEntity<>(wallet, OK);
+            logger.log(Level.INFO, "Read wallet successfully with id = "+id);
+            return r;
+        }
+        catch (NoSuchElementException e) {
+            logger.log(Level.INFO, "Cannot read nonexistent wallet");
+            return new ResponseEntity<>(NOT_FOUND);
+        }
     }
 
     @PostMapping("/wallet")
@@ -53,4 +64,24 @@ public class WalletController {
         walletService.save(wallet);
         return new ResponseEntity<>(OK);
     }
+
+    @PutMapping(value = "/wallet", params = "userId")
+    public ResponseEntity<?> addBalanceByUserID(@RequestParam("userId") Integer id,
+                                                @RequestBody Wallet balanceWallet) {
+        Wallet wallet = walletService.findByOwnerID(id).get(0);
+        wallet.setBalance(wallet.getBalance() + balanceWallet.getBalance());
+        logger.log(Level.INFO, "Balance of "+balanceWallet.getBalance()+" added");
+        walletService.save(wallet);
+        return new ResponseEntity<>(OK);
+    }
+
+//    @PutMapping(value = "/wallet", params = "walletId")
+//    public ResponseEntity<?> addBalanceByWalletID(@RequestParam("walletId") Integer id,
+//                                                @RequestBody Wallet balanceWallet) {
+//        Wallet wallet = walletService.findByOwnerID(id).get(0);
+//        wallet.setBalance(wallet.getBalance() + balanceWallet.getBalance());
+//        logger.log(Level.INFO, "Balance of "+balanceWallet.getBalance()+" added");
+//        walletService.save(wallet);
+//        return new ResponseEntity<>(OK);
+//    }
 }

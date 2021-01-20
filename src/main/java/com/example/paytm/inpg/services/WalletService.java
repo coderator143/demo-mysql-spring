@@ -16,5 +16,9 @@ public class WalletService {
 
     public List<Wallet> listAll() { return walletRepository.findAll(); }
 
+    public Wallet get(Integer id) { return walletRepository.findById(id).get(); }
+
     public void save(Wallet wallet) { walletRepository.save(wallet); }
+
+    public List<Wallet> findByOwnerID(int owner) { return walletRepository.findByOwner(owner); }
 }
