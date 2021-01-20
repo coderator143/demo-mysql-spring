@@ -4,6 +4,8 @@ import com.example.paytm.inpg.entities.Transaction;
 import com.example.paytm.inpg.entities.User;
 import com.example.paytm.inpg.repositories.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,8 +18,8 @@ public class TransactionService {
 
     public void save(Transaction transaction) { transactionRepository.save(transaction); }
 
-    public List<Transaction> getTransactionByUserId(Integer id) {
-        return transactionRepository.findByUser(id);
+    public Page<Transaction> getTransactionByUserId(Integer id, Pageable pageable) {
+        return transactionRepository.findByUser(id, pageable);
     }
 
     public Transaction get(Integer id) { return transactionRepository.findById(id).get(); }

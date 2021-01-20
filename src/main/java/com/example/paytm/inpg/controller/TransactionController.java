@@ -8,6 +8,9 @@ import com.example.paytm.inpg.services.TransactionService;
 import com.example.paytm.inpg.services.UserService;
 import com.example.paytm.inpg.services.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,9 +65,11 @@ public class TransactionController {
     }
 
     @GetMapping(value = "/transaction", params = "userId")
-    public List<Transaction> getTransactionByUserID(@RequestParam("userId") Integer id) {
+    public Page<Transaction> getTransactionByUserID(@RequestParam("userId") Integer id,
+                                                    @RequestParam("page") Integer page) {
         logger.log(Level.INFO, "All transaction of user with id = "+id);
-        return transactionService.getTransactionByUserId(id);
+        return transactionService.getTransactionByUserId(id, PageRequest.of(page, 3,
+                Sort.by("time").descending()));
     }
 
     @GetMapping(value = "/transaction", params = "txnId")
