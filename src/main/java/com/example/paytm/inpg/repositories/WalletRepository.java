@@ -1,6 +1,5 @@
 package com.example.paytm.inpg.repositories;
 
-import com.example.paytm.inpg.entities.User;
 import com.example.paytm.inpg.entities.Wallet;
 import org.springframework.data.jpa.repository.JpaRepository;
 
