@@ -9,15 +9,14 @@ import com.example.paytm.inpg.services.UserService;
 import com.example.paytm.inpg.services.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 public class TransactionController {
@@ -60,5 +59,25 @@ public class TransactionController {
         transactionService.save(transactionPayer);
         transactionService.save(transactionPayee);
         return new ResponseEntity<>(OK);
+    }
+
+    @GetMapping(value = "/transaction", params = "userId")
+    public List<Transaction> getTransactionByUserID(@RequestParam("userId") Integer id) {
+        logger.log(Level.INFO, "All transaction of user with id = "+id);
+        return transactionService.getTransactionByUserId(id);
+    }
+
+    @GetMapping(value = "/transaction", params = "txnId")
+    public ResponseEntity<String> get(@RequestParam("txnId") Integer id) {
+        try {
+            Transaction existingTransaction = transactionService.get(id);
+            ResponseEntity<String> r = new ResponseEntity<>(existingTransaction.getStatus(), OK);
+            logger.log(Level.INFO, "Read transaction successfully with id = "+id);
+            return r;
+        }
+        catch (NoSuchElementException e) {
+            logger.log(Level.INFO, "Cannot read nonexistent transaction");
+            return new ResponseEntity<>(NOT_FOUND);
+        }
     }
 }
