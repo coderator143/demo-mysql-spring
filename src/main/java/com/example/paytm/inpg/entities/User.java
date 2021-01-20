@@ -9,11 +9,12 @@ public class User {
     private int id;
     private String username, firstname, lastname, emailid, address1, address2;
     private long mobilenumber;
+    private boolean haswallet;
 
     public User() {}
 
     public User(int id, String username, String firstname, String lastname, String emailid, String address1,
-                String address2, long mobilenumber) {
+                String address2, long mobilenumber, boolean haswallet) {
         this.id = id;
         this.username = username;
         this.firstname = firstname;
@@ -22,6 +23,7 @@ public class User {
         this.address1 = address1;
         this.address2 = address2;
         this.mobilenumber = mobilenumber;
+        this.haswallet = haswallet;
     }
 
     @Id
@@ -88,5 +90,13 @@ public class User {
 
     public void setMobilenumber(long mobilenumber) {
         this.mobilenumber = mobilenumber;
+    }
+
+    public boolean getHaswallet() {
+        return haswallet;
+    }
+
+    public void setHaswallet(boolean haswallet) {
+        this.haswallet = haswallet;
     }
 }

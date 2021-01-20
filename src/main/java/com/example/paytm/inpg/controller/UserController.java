@@ -7,6 +7,9 @@ import com.example.paytm.inpg.helpers.PutValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
@@ -85,5 +88,12 @@ public class UserController {
             logger.log(Level.INFO, "Cannot delete nonexistent user");
             return new ResponseEntity<>(NOT_FOUND);
         }
+    }
+
+    @DeleteMapping(value = "/user")
+    public ResponseEntity<?> deleteAll() {
+        logger.log(Level.INFO, "all users deleted");
+        userService.deleteAll();
+        return new ResponseEntity<>(OK);
     }
 }

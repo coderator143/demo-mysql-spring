@@ -14,11 +14,15 @@ public class PostValidator {
     }
 
     public static boolean isMobileNumberValidated(long mobileNumber, UserService userService) {
+        if(mobileNumber == 0) return true;
         return userService.findbyMobileNumber(mobileNumber).isEmpty();
     }
 
     public static String postResponseMessage(User user, UserService userService) {
-        if(!isEmailValidated(user.getEmailid(), userService))
+        if(user.getUsername() == null) return "Username cannot be empty";
+        else if(user.getFirstname() == null) return "Firstname cannot be empty";
+        else if(user.getLastname() == null) return "Lastname cannot be empty";
+        else if(!isEmailValidated(user.getEmailid(), userService))
             return "User with an identical email already exists";
         else if(!isUserNameValidated(user.getUsername(), userService))
             return "User with an identical username already exists";
