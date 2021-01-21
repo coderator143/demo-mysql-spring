@@ -94,4 +94,18 @@ public class WalletController {
         walletService.save(wallet);
         return new ResponseEntity<>(OK);
     }
+
+    @DeleteMapping(value = "/wallet", params = "walletId")
+    public ResponseEntity<?> deleteWalletByID(@RequestParam("walletId") Integer id) {
+        try {
+            Wallet existingWallet = walletService.get(id);
+            logger.log(Level.INFO, "Deleted wallet successfully with id = "+id);
+            walletService.delete(id);
+            return new ResponseEntity<>(OK);
+        }
+        catch (NoSuchElementException e) {
+            logger.log(Level.INFO, "Cannot delete nonexistent wallet");
+            return new ResponseEntity<>(NOT_FOUND);
+        }
+    }
 }
