@@ -1,5 +1,6 @@
 package com.example.paytm.inpg.entities;
 
+// just an entity to make a json request body as an input for p2p transfer
 public class TransactionRequestBody {
 
     private long payer_phone_number, payee_phone_number;

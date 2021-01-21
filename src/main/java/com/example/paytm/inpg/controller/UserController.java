@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 import static org.springframework.http.HttpStatus.*;
 
-// controller class for accepting HTTP Requests
+// user controller class for accepting and managing HTTP Requests
 @RestController
 public class UserController {
 

@@ -14,6 +14,7 @@ public class WalletService {
     @Autowired
     private WalletRepository walletRepository;
 
+    // Using all pre-created methods of WalletRepository
     public List<Wallet> listAll() { return walletRepository.findAll(); }
 
     public Wallet get(Integer id) { return walletRepository.findById(id).get(); }
