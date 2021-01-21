@@ -16,6 +16,7 @@ public class TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
 
+    // Using all pre-created methods of TransactionRepository
     public void save(Transaction transaction) { transactionRepository.save(transaction); }
 
     public Page<Transaction> getTransactionByUserId(Integer id, Pageable pageable) {

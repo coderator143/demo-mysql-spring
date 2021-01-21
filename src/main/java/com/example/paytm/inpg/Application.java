@@ -8,12 +8,6 @@ import org.springframework.context.ApplicationContext;
 @SpringBootApplication
 public class Application {
 	public static void main(String[] args) {
-		ApplicationContext context = SpringApplication.run(Application.class, args);
-
-		//UserRepository userRepository = context.getBean(UserRepository.class);
-
-		//List<User> users = userRepository.findByEmailid("eee");
-
-		//users.forEach(e->System.out.println(e.getFirstname()));
+		SpringApplication.run(Application.class, args);
 	}
 }

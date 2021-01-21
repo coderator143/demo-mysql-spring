@@ -3,6 +3,7 @@ package com.example.paytm.inpg.helpers;
 import com.example.paytm.inpg.entities.User;
 import com.example.paytm.inpg.services.UserService;
 
+// validating post requests in user controller
 public class PostValidator {
 
     public static boolean isEmailValidated(String emailID, UserService userService) {
