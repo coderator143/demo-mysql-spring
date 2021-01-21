@@ -37,13 +37,19 @@ public class TransactionController {
         List<User> payerUser = userService.findbyMobileNumber(requestBody.getPayer_phone_number());
         List<User> payeeUser = userService.findbyMobileNumber(requestBody.getPayee_phone_number());
         if(payeeUser.isEmpty() || payerUser.isEmpty()) {
-            logger.log(Level.INFO, "Either one or both of the user doesn't exist with these phone number");
+            logger.log(Level.INFO, "Either the payer or payee with this phone number doesn't exist");
             return new ResponseEntity<>(BAD_REQUEST);
         }
         int payerID = payerUser.get(0).getId(), payeeID = payeeUser.get(0).getId();
         int amount = requestBody.getAmount();
-        Wallet payer = walletService.findByOwnerID(payerID).get(0);
-        Wallet payee = walletService.findByOwnerID(payeeID).get(0);
+        List<Wallet> payerL= walletService.findByOwnerID(payerID);
+        List<Wallet> payeeL = walletService.findByOwnerID(payeeID);
+        if(payeeL.isEmpty() || payerL.isEmpty()) {
+            logger.log(Level.INFO, "Either the payer or payee doesn't have a registered wallet");
+            return new ResponseEntity<>(BAD_REQUEST);
+        }
+        Wallet payer = payerL.get(0);
+        Wallet payee = payeeL.get(0);
         if(payer.getBalance() < amount) {
             logger.log(Level.INFO, "Insufficient balance");
             return new ResponseEntity<>(BAD_REQUEST);

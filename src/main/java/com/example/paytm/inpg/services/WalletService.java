@@ -20,5 +20,7 @@ public class WalletService {
 
     public void save(Wallet wallet) { walletRepository.save(wallet); }
 
+    public void delete(Integer id) { walletRepository.deleteById(id); }
+
     public List<Wallet> findByOwnerID(int owner) { return walletRepository.findByOwner(owner); }
 }
