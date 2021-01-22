@@ -1,19 +1,24 @@
 package com.example.paytm.inpg.helpers;
 
+import com.example.paytm.inpg.entities.Transaction;
+import com.example.paytm.inpg.entities.TransactionRequestBody;
 import com.example.paytm.inpg.entities.User;
 import com.example.paytm.inpg.entities.Wallet;
+import com.example.paytm.inpg.services.TransactionService;
 import com.example.paytm.inpg.services.UserService;
 import com.example.paytm.inpg.services.WalletService;
 import org.apache.commons.logging.Log;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 // validating post requests in user controller
 public class PostValidator {
@@ -85,5 +90,66 @@ public class PostValidator {
         userService.save(user);
         walletService.save(wallet);
         Constants.WALLET_POST_MESSAGE = "Wallet created";
+    }
+
+    public static Map<Integer, Wallet> p2pPost(TransactionRequestBody requestBody,
+                                                     UserService userService, WalletService walletService) {
+        Map<Integer, Wallet> map = new HashMap<>();
+        // payerUser and payeeUser are list of a user with payer and payee phone number
+        List<User> payerUser = userService.findbyMobileNumber(requestBody.getPayer_phone_number());
+        List<User> payeeUser = userService.findbyMobileNumber(requestBody.getPayee_phone_number());
+
+        // if either of these lists are empty, that means user doesn't exist
+        if(payeeUser.isEmpty() || payerUser.isEmpty()) {
+            Constants.P2P_MESSAGE = "Either the payer or payee with this phone number doesn't exist";
+            return map;
+        }
+
+        // getting ID of both the users
+        int payerID = payerUser.get(0).getId(), payeeID = payeeUser.get(0).getId();
+        int amount = requestBody.getAmount();
+
+        // payerL and payeeL is a list of wallet of the payer and payee users
+        List<Wallet> payerL= walletService.findByOwnerID(payerID);
+        List<Wallet> payeeL = walletService.findByOwnerID(payeeID);
+
+        // if either of the lists is empty, it means user doesn't have a registered account
+        if(payeeL.isEmpty() || payerL.isEmpty()) {
+            Constants.P2P_MESSAGE = "Either the payer or payee doesn't have a registered wallet";
+            return map;
+        }
+
+        // getting wallet objects of the payer and payee
+        Wallet payer = payerL.get(0), payee = payeeL.get(0);
+
+        // if the payer has insufficient balance
+        if(payer.getBalance() < amount) {
+            Constants.P2P_MESSAGE = "Insufficient balance";
+            return map;
+        }
+        map.put(1, payer);
+        map.put(2, payee);
+        return map;
+    }
+
+    public static void p2pCreate(Wallet payer, Wallet payee, int amount, WalletService walletService,
+                                 TransactionService transactionService) {
+        // updating and saving payer and payee wallets after the transaction
+        payer.setBalance(payer.getBalance() - amount);
+        payee.setBalance(payee.getBalance() + amount);
+        walletService.save(payer); walletService.save(payee);
+        int payerID = payer.getOwner(), payeeID = payee.getOwner();
+
+        // creating and saving two transaction objects for payer and payee
+        Transaction transactionPayer = new Transaction(), transactionPayee = new Transaction();
+        transactionPayer.setUser(payerID); transactionPayer.setWithuser(payeeID);
+        transactionPayer.setTime(System.currentTimeMillis()); transactionPayer.setMode("Payed");
+        transactionPayer.setStatus("Completed"); transactionPayer.setAmount(amount);
+        transactionPayee.setUser(payeeID); transactionPayee.setWithuser(payerID);
+        transactionPayee.setTime(System.currentTimeMillis()); transactionPayee.setMode("Received");
+        transactionPayee.setStatus("Completed"); transactionPayee.setAmount(amount);
+        logger.log(Level.INFO, "Amount of Rs "+amount+" transferred from "+payerID+" to "+payeeID);
+        transactionService.save(transactionPayer);
+        transactionService.save(transactionPayee);
     }
 }

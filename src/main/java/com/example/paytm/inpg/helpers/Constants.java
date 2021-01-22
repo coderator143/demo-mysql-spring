@@ -4,4 +4,5 @@ public class Constants {
 
     public static String WALLET_POST_MESSAGE = "";
     public static String WALLET_PUT_MESSAGE = "";
+    public static String P2P_MESSAGE = "";
 }
