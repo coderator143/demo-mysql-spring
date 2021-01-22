@@ -25,6 +25,11 @@ public class UserController {
     private UserService userService;
     private Logger logger = Logger.getLogger(this.getClass().getName());
 
+    @Autowired
+    public void setSimpleUserService(UserService userService) {
+        this.userService = userService;
+    }
+
     // basically calling CRUD methods of the service class and specifying the response to return
     @GetMapping("/user")
     public List<User> list() {
