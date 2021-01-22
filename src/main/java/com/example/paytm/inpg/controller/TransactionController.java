@@ -1,8 +1,8 @@
 package com.example.paytm.inpg.controller;
 
+import com.example.paytm.inpg.entities.ResponseBody;
 import com.example.paytm.inpg.entities.Transaction;
 import com.example.paytm.inpg.entities.TransactionRequestBody;
-import com.example.paytm.inpg.entities.User;
 import com.example.paytm.inpg.entities.Wallet;
 import com.example.paytm.inpg.helpers.Constants;
 import com.example.paytm.inpg.helpers.PostValidator;
@@ -15,7 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
@@ -38,17 +38,20 @@ public class TransactionController {
     // basically calling CRUD methods of the service class and specifying the response to return
     // using transaction request body in entity class as a request for p2p transfer
     @PostMapping("/transaction")
-    public ResponseEntity<?> p2pTransfer(@RequestBody TransactionRequestBody requestBody) {
+    public ResponseEntity<ResponseBody> p2pTransfer(@RequestBody TransactionRequestBody requestBody) {
         Map<Integer, Wallet> m = PostValidator.p2pPost(requestBody, userService, walletService);
+        ResponseBody responseBody;
         if(m.isEmpty()) {
-            logger.log(Level.INFO, Constants.P2P_MESSAGE);
-            return new ResponseEntity<>(Constants.P2P_MESSAGE, OK);
+            logger.log(Level.INFO, Constants.getP2pMessage());
+            responseBody = new ResponseBody(Constants.getP2pMessage(), "OK");
+            return new ResponseEntity<>(responseBody, OK);
         }
         Wallet payer = m.get(1), payee = m.get(2);
         int payerID = payer.getOwner(), payeeID = payee.getOwner(), amount = requestBody.getAmount();
         PostValidator.p2pCreate(payer, payee, amount, walletService, transactionService);
-        return new ResponseEntity<>("Amount of Rs "+amount+" transferred from "+payerID+" to "+payeeID,
-                OK);
+        responseBody = new ResponseBody(
+                "Amount of Rs "+amount+" transferred from "+payerID+" to "+payeeID, "OK");
+        return new ResponseEntity<>(responseBody, OK);
     }
 
     @GetMapping(value = "/transaction", params = "userId")
@@ -62,16 +65,18 @@ public class TransactionController {
     }
 
     @GetMapping(value = "/transaction", params = "txnId")
-    public ResponseEntity<String> get(@RequestParam("txnId") Integer id) {
+    public ResponseEntity<ResponseBody> get(@RequestParam("txnId") Integer id) {
+        ResponseBody responseBody;
         try {
             Transaction existingTransaction = transactionService.get(id);
-            ResponseEntity<String> r = new ResponseEntity<>(existingTransaction.getStatus(), OK);
+            responseBody = new ResponseBody("Read transaction successfully with id = "+id, "OK");
             logger.log(Level.INFO, "Read transaction successfully with id = "+id);
-            return r;
+            return new ResponseEntity<>(responseBody, OK);
         }
         catch (NoSuchElementException e) {
+            responseBody = new ResponseBody("Cannot read nonexistent transaction", "Not found");
             logger.log(Level.INFO, "Cannot read nonexistent transaction");
-            return new ResponseEntity<>(NOT_FOUND);
+            return new ResponseEntity<>(responseBody, NOT_FOUND);
         }
     }
 }

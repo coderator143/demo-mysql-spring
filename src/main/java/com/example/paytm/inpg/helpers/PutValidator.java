@@ -22,7 +22,7 @@ public class PutValidator {
 
         // if wallet list is empty, user doesn't exist
         if(wallets.isEmpty()) {
-            Constants.WALLET_PUT_MESSAGE = "User does not exist";
+            Constants.setWalletPutMessage("User does not exist");
             return wallets;
         }
 
@@ -33,7 +33,7 @@ public class PutValidator {
         // adding balance = 0 is insignificant, less than 0 is not possible
         if(balance < 1) {
             wallets.remove(0);
-            Constants.WALLET_PUT_MESSAGE = "Cannot add balance <= 0";
+            Constants.setWalletPutMessage("Cannot add balance <= 0");
             return wallets;
         }
         return wallets;

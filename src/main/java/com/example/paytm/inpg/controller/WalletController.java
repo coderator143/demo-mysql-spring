@@ -1,23 +1,20 @@
 package com.example.paytm.inpg.controller;
 
+import com.example.paytm.inpg.entities.ResponseBody;
 import com.example.paytm.inpg.entities.User;
 import com.example.paytm.inpg.entities.Wallet;
 import com.example.paytm.inpg.helpers.Constants;
 import com.example.paytm.inpg.helpers.PostValidator;
 import com.example.paytm.inpg.helpers.PutValidator;
-import com.example.paytm.inpg.helpers.UtilityMethods;
 import com.example.paytm.inpg.services.UserService;
 import com.example.paytm.inpg.services.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import static org.springframework.http.HttpStatus.*;
 
 // wallet controller class for accepting and managing HTTP Requests
@@ -38,7 +35,7 @@ public class WalletController {
     }
 
     @GetMapping(value = "/wallet", params = "walletId")
-    public ResponseEntity<Wallet> get(@RequestParam("walletId") Integer id) {
+    public ResponseEntity<?> get(@RequestParam("walletId") Integer id) {
         try {
             Wallet wallet = walletService.get(id);
             ResponseEntity<Wallet> r = new ResponseEntity<>(wallet, OK);
@@ -47,54 +44,66 @@ public class WalletController {
         }
         catch (NoSuchElementException e) {
             logger.log(Level.INFO, "Cannot read nonexistent wallet");
-            return new ResponseEntity<>(NOT_FOUND);
+            ResponseBody responseBody = new ResponseBody("Cannot read nonexistent wallet",
+                    "Not found");
+            return new ResponseEntity<>(responseBody, NOT_FOUND);
         }
     }
 
     // using User object as a request body where it will have only one field, i.e, mobile number
     @PostMapping("/wallet")
-    public ResponseEntity<String> add(@RequestBody User userBody) {
+    public ResponseEntity<ResponseBody> add(@RequestBody User userBody) {
         long mobileNumber = userBody.getMobilenumber();
+        ResponseBody responseBody;
         List<User> walletUser = PostValidator.walletPostValidate(mobileNumber, userService);
         if(walletUser.isEmpty()) {
-            logger.log(Level.INFO, Constants.WALLET_POST_MESSAGE);
-            return new ResponseEntity<>(Constants.WALLET_POST_MESSAGE, OK);
+            logger.log(Level.INFO, Constants.getWalletPostMessage());
+            responseBody = new ResponseBody(Constants.getWalletPostMessage(), "OK");
+            return new ResponseEntity<>(responseBody, OK);
         }
         PostValidator.createSuccessfulWalletAccount(walletUser, userService, walletService);
-        logger.log(Level.INFO, Constants.WALLET_POST_MESSAGE);
-        return new ResponseEntity<>(Constants.WALLET_POST_MESSAGE, OK);
+        responseBody = new ResponseBody(Constants.getWalletPostMessage(), "OK");
+        logger.log(Level.INFO, Constants.getWalletPostMessage());
+        return new ResponseEntity<>(responseBody, OK);
     }
 
     @PutMapping(value = "/wallet", params = "userId")
-    public ResponseEntity<String> addBalanceByUserID(@RequestParam("userId") Integer id,
+    public ResponseEntity<ResponseBody> addBalanceByUserID(@RequestParam("userId") Integer id,
                                                 @RequestBody Wallet balance) {
         List<Wallet> wallets = PutValidator.canBalanceBeAdded(walletService, id, balance);
+        ResponseBody responseBody;
         if(wallets.isEmpty()) {
-            logger.log(Level.INFO, Constants.WALLET_PUT_MESSAGE);
-            return new ResponseEntity<>(Constants.WALLET_PUT_MESSAGE, OK);
+            logger.log(Level.INFO, Constants.getWalletPutMessage());
+            responseBody = new ResponseBody(Constants.getWalletPutMessage(), "OK");
+            return new ResponseEntity<>(responseBody, OK);
         }
         Wallet wallet = wallets.get(0);
 
         // setting wallet balance and then saving it
         wallet.setBalance(wallet.getBalance() + balance.getBalance());
+        responseBody = new ResponseBody(
+                "Balance of "+balance.getBalance()+" added to wallet with id = "+wallet.getId(),
+                "OK");
         logger.log(Level.INFO,
                 "Balance of "+balance.getBalance()+" added to wallet with id = "+wallet.getId());
         walletService.save(wallet);
-        return new ResponseEntity<>(
-                "Balance of "+balance.getBalance()+" added to wallet with id = "+wallet.getId(), OK);
+        return new ResponseEntity<>(responseBody, OK);
     }
 
     @DeleteMapping(value = "/wallet", params = "walletId")
-    public ResponseEntity<?> deleteWalletByID(@RequestParam("walletId") Integer id) {
+    public ResponseEntity<ResponseBody> deleteWalletByID(@RequestParam("walletId") Integer id) {
+        ResponseBody responseBody;
         try {
             Wallet existingWallet = walletService.get(id);
+            responseBody = new ResponseBody("Deleted wallet successfully with id = "+id, "OK");
             logger.log(Level.INFO, "Deleted wallet successfully with id = "+id);
             walletService.delete(id);
-            return new ResponseEntity<>("Deleted wallet successfully with id = "+id, OK);
+            return new ResponseEntity<>(responseBody, OK);
         }
         catch (NoSuchElementException e) {
             logger.log(Level.INFO, "Cannot delete nonexistent wallet");
-            return new ResponseEntity<>("Cannot delete nonexistent wallet", NOT_FOUND);
+            responseBody = new ResponseBody("Cannot delete nonexistent wallet", "Not found");
+            return new ResponseEntity<>(responseBody, NOT_FOUND);
         }
     }
 }

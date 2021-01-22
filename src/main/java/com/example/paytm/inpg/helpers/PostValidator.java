@@ -7,24 +7,13 @@ import com.example.paytm.inpg.entities.Wallet;
 import com.example.paytm.inpg.services.TransactionService;
 import com.example.paytm.inpg.services.UserService;
 import com.example.paytm.inpg.services.WalletService;
-import org.apache.commons.logging.Log;
-import org.springframework.http.ResponseEntity;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import static org.springframework.http.HttpStatus.*;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-
-// validating post requests in user controller
+// validating post requests in controllers
 public class PostValidator {
-
-    private static Logger logger = Logger.getLogger("Wallet controller");
-
     public static boolean isEmailValidated(String emailID, UserService userService) {
         return userService.findByEmailID(emailID).isEmpty();
     }
@@ -55,7 +44,7 @@ public class PostValidator {
         // if mobile number we get from request body is 0
         List<User> walletUser = new ArrayList<>();
         if(mobileNumber == 0) {
-            Constants.WALLET_POST_MESSAGE = "Mobile number field is empty";
+            Constants.setWalletPostMessage("Mobile number field is empty");
             return walletUser;
         }
 
@@ -64,13 +53,13 @@ public class PostValidator {
 
         // if list is empty then the user with phone number doesn't exist
         if(walletUser.isEmpty()) {
-            Constants.WALLET_POST_MESSAGE = "User with phone number "+ mobileNumber +" does not exist";
+            Constants.setWalletPostMessage("User with phone number "+ mobileNumber +" does not exist");
             return walletUser;
         }
         // if list has a user but he is not already registered for a wallet
         else if(walletUser.size() > 0 && walletUser.get(0).getHaswallet()) {
             walletUser.remove(0);
-            Constants.WALLET_POST_MESSAGE = "User already has a wallet registered";
+            Constants.setWalletPostMessage("User already has a wallet registered");
             return walletUser;
         }
         return walletUser;
@@ -89,7 +78,7 @@ public class PostValidator {
         wallet.setOwner(user.getId());
         userService.save(user);
         walletService.save(wallet);
-        Constants.WALLET_POST_MESSAGE = "Wallet created";
+        Constants.setWalletPostMessage("Wallet created");
     }
 
     public static Map<Integer, Wallet> p2pPost(TransactionRequestBody requestBody,
@@ -101,7 +90,7 @@ public class PostValidator {
 
         // if either of these lists are empty, that means user doesn't exist
         if(payeeUser.isEmpty() || payerUser.isEmpty()) {
-            Constants.P2P_MESSAGE = "Either the payer or payee with this phone number doesn't exist";
+            Constants.setP2pMessage("Either the payer or payee with this phone number doesn't exist");
             return map;
         }
 
@@ -115,7 +104,7 @@ public class PostValidator {
 
         // if either of the lists is empty, it means user doesn't have a registered account
         if(payeeL.isEmpty() || payerL.isEmpty()) {
-            Constants.P2P_MESSAGE = "Either the payer or payee doesn't have a registered wallet";
+            Constants.setP2pMessage("Either the payer or payee doesn't have a registered wallet");
             return map;
         }
 
@@ -124,7 +113,7 @@ public class PostValidator {
 
         // if the payer has insufficient balance
         if(payer.getBalance() < amount) {
-            Constants.P2P_MESSAGE = "Insufficient balance";
+            Constants.setP2pMessage("Insufficient balance");
             return map;
         }
         map.put(1, payer);
@@ -148,7 +137,6 @@ public class PostValidator {
         transactionPayee.setUser(payeeID); transactionPayee.setWithuser(payerID);
         transactionPayee.setTime(System.currentTimeMillis()); transactionPayee.setMode("Received");
         transactionPayee.setStatus("Completed"); transactionPayee.setAmount(amount);
-        logger.log(Level.INFO, "Amount of Rs "+amount+" transferred from "+payerID+" to "+payeeID);
         transactionService.save(transactionPayer);
         transactionService.save(transactionPayee);
     }

@@ -7,9 +7,7 @@ import com.example.paytm.inpg.helpers.PutValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import com.example.paytm.inpg.entities.ResponseBody;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
@@ -25,11 +23,6 @@ public class UserController {
     private UserService userService;
     private Logger logger = Logger.getLogger(this.getClass().getName());
 
-    @Autowired
-    public void setSimpleUserService(UserService userService) {
-        this.userService = userService;
-    }
-
     // basically calling CRUD methods of the service class and specifying the response to return
     @GetMapping("/user")
     public List<User> list() {
@@ -38,7 +31,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/user", params = "userId")
-    public ResponseEntity<User> get(@RequestParam("userId") Integer id) {
+    public ResponseEntity<?> get(@RequestParam("userId") Integer id) {
         try {
             User user = userService.get(id);
             ResponseEntity<User> r = new ResponseEntity<>(user, OK);
@@ -47,58 +40,72 @@ public class UserController {
         }
         catch (NoSuchElementException e) {
             logger.log(Level.INFO, "Cannot read nonexistent user");
-            return new ResponseEntity<>(NOT_FOUND);
+            ResponseBody responseBody = new ResponseBody("Cannot read nonexistent user",
+                    "Not found");
+            return new ResponseEntity<>(responseBody, NOT_FOUND);
         }
     }
 
     @PostMapping("/user")
-    public ResponseEntity<?> add(@RequestBody User user) {
+    public ResponseEntity<ResponseBody> add(@RequestBody User user) {
         String msg = PostValidator.postResponseMessage(user, userService);
+        ResponseBody responseBody;
         if(msg != "") {
             logger.log(Level.INFO, msg);
-            return new ResponseEntity<>(CONFLICT);
+            responseBody = new ResponseBody(msg, "undesired input");
+            return new ResponseEntity<>(responseBody, OK);
         }
         logger.log(Level.INFO, "User saved with id = "+user.getId());
+        responseBody = new ResponseBody("User saved with id = "+user.getId(), "OK");
         userService.save(user);
-        return new ResponseEntity<>(OK);
+        return new ResponseEntity<>(responseBody, OK);
     }
 
     @PutMapping(value = "/user", params = "userId")
-    public ResponseEntity<?> update(@RequestBody User user, @RequestParam("userId") Integer id) {
+    public ResponseEntity<ResponseBody> update(@RequestBody User user, @RequestParam("userId") Integer id) {
+        ResponseBody responseBody;
         try {
             User existingUser = userService.get(id);
             if(!PutValidator.canBeUpdated(user, existingUser)) {
                 logger.log(Level.INFO, "Only email and address can be updated");
-                return new ResponseEntity<>(BAD_REQUEST);
+                responseBody = new ResponseBody("Only email and address can be updated",
+                        "undesired input");
+                return new ResponseEntity<>(responseBody, OK);
             }
             logger.log(Level.INFO, "Updated user successfully with id = "+id);
+            responseBody = new ResponseBody("Updated user successfully with id = "+id, "OK");
             userService.save(user);
-            return new ResponseEntity<>(OK);
+            return new ResponseEntity<>(responseBody, OK);
         }
         catch (NoSuchElementException e) {
             logger.log(Level.INFO, "Cannot update nonexistent user");
-            return new ResponseEntity<>(NOT_FOUND);
+            responseBody = new ResponseBody("Cannot update nonexistent user", "Not found");
+            return new ResponseEntity<>(responseBody, NOT_FOUND);
         }
     }
 
     @DeleteMapping(value = "/user", params = "userId")
-    public ResponseEntity<?> delete(@RequestParam("userId") Integer id) {
+    public ResponseEntity<ResponseBody> delete(@RequestParam("userId") Integer id) {
+        ResponseBody responseBody;
         try {
             User existingUser = userService.get(id);
             logger.log(Level.INFO, "Deleted user successfully with id = "+id);
+            responseBody = new ResponseBody("Deleted user successfully with id = "+id, "OK");
             userService.delete(id);
-            return new ResponseEntity<>(OK);
+            return new ResponseEntity<>(responseBody, OK);
         }
         catch (NoSuchElementException e) {
             logger.log(Level.INFO, "Cannot delete nonexistent user");
-            return new ResponseEntity<>(NOT_FOUND);
+            responseBody = new ResponseBody("Cannot delete nonexistent user", "Not found");
+            return new ResponseEntity<>(responseBody, NOT_FOUND);
         }
     }
 
     @DeleteMapping(value = "/user")
     public ResponseEntity<?> deleteAll() {
         logger.log(Level.INFO, "all users deleted");
+        ResponseBody responseBody = new ResponseBody("all users deleted", "OK");
         userService.deleteAll();
-        return new ResponseEntity<>(OK);
+        return new ResponseEntity<>(responseBody, OK);
     }
 }
