@@ -4,6 +4,7 @@ import com.example.paytm.inpg.entities.User;
 import com.example.paytm.inpg.entities.Wallet;
 import com.example.paytm.inpg.helpers.Constants;
 import com.example.paytm.inpg.helpers.PostValidator;
+import com.example.paytm.inpg.helpers.PutValidator;
 import com.example.paytm.inpg.helpers.UtilityMethods;
 import com.example.paytm.inpg.services.UserService;
 import com.example.paytm.inpg.services.WalletService;
@@ -66,34 +67,21 @@ public class WalletController {
 
     @PutMapping(value = "/wallet", params = "userId")
     public ResponseEntity<String> addBalanceByUserID(@RequestParam("userId") Integer id,
-                                                @RequestBody Wallet balanceWallet) {
-        // find list of wallet by userID
-        List<Wallet> wallets = walletService.findByOwnerID(id);
-
-        // if wallet list is empty, user doesn't exist
+                                                @RequestBody Wallet balance) {
+        List<Wallet> wallets = PutValidator.canBalanceBeAdded(walletService, id, balance);
         if(wallets.isEmpty()) {
-            logger.log(Level.INFO, "User does not exist");
-            return new ResponseEntity<>("User does not exist", NOT_FOUND);
+            logger.log(Level.INFO, Constants.WALLET_PUT_MESSAGE);
+            return new ResponseEntity<>(Constants.WALLET_PUT_MESSAGE, OK);
         }
-
-        // getting wallet object from list and then balance
         Wallet wallet = wallets.get(0);
-        int balance = balanceWallet.getBalance();
-
-        // adding balance = 0 is insignificant, less than 0 is not possible
-        if(balance < 1) {
-            logger.log(Level.INFO, "Cannot add balance <= 0");
-            return new ResponseEntity<>("Cannot add balance <= 0", OK);
-        }
 
         // setting wallet balance and then saving it
-        wallet.setBalance(wallet.getBalance() + balanceWallet.getBalance());
+        wallet.setBalance(wallet.getBalance() + balance.getBalance());
         logger.log(Level.INFO,
-                "Balance of "+balanceWallet.getBalance()+" added to wallet with id = "+wallet.getId());
+                "Balance of "+balance.getBalance()+" added to wallet with id = "+wallet.getId());
         walletService.save(wallet);
         return new ResponseEntity<>(
-                "Balance of "+balanceWallet.getBalance()+" added to wallet with id = "+wallet.getId(),
-                OK);
+                "Balance of "+balance.getBalance()+" added to wallet with id = "+wallet.getId(), OK);
     }
 
     @DeleteMapping(value = "/wallet", params = "walletId")
