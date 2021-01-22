@@ -1,21 +1,16 @@
 package com.example.paytm.inpg.testing;
 
-import com.example.paytm.inpg.controller.UserController;
 import static org.mockito.Mockito.when;
 import static org.junit.Assert.assertEquals;
-
 import com.example.paytm.inpg.entities.User;
 import com.example.paytm.inpg.repositories.UserRepository;
 import com.example.paytm.inpg.services.UserService;
-import com.sun.el.stream.Stream;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

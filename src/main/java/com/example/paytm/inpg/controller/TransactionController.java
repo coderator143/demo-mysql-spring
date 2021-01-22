@@ -13,7 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
@@ -45,7 +44,8 @@ public class TransactionController {
         // if either of these lists are empty, that means user doesn't exist
         if(payeeUser.isEmpty() || payerUser.isEmpty()) {
             logger.log(Level.INFO, "Either the payer or payee with this phone number doesn't exist");
-            return new ResponseEntity<>(BAD_REQUEST);
+            return new ResponseEntity<>(
+                    "Either the payer or payee with this phone number doesn't exist", OK);
         }
 
         // getting ID of both the users
@@ -87,7 +87,8 @@ public class TransactionController {
         logger.log(Level.INFO, "Amount of Rs "+amount+" transferred from "+payerID+" to "+payeeID);
         transactionService.save(transactionPayer);
         transactionService.save(transactionPayee);
-        return new ResponseEntity<>(OK);
+        return new ResponseEntity<>("Amount of Rs "+amount+" transferred from "+payerID+" to "+payeeID,
+                OK);
     }
 
     @GetMapping(value = "/transaction", params = "userId")
