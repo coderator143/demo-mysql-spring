@@ -24,6 +24,11 @@ public class UserController {
     private Logger logger = Logger.getLogger(this.getClass().getName());
 
     // basically calling CRUD methods of the service class and specifying the response to return
+    @GetMapping("/loginUser")
+    public String loginUser() {
+        return "User logged in";
+    }
+
     @GetMapping("/user")
     public List<User> list() {
         logger.log(Level.INFO, "list of all users returned");
