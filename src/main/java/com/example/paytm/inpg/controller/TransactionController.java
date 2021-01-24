@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -34,6 +35,9 @@ public class TransactionController {
     @Autowired
     private WalletService walletService;
     private Logger logger = Logger.getLogger(this.getClass().getName());
+    @Autowired
+    KafkaTemplate<String, Transaction> kafkaTemplate;
+    private static final String TOPIC = "Transaction-PUSH";
 
     // basically calling CRUD methods of the service class and specifying the response to return
     // using transaction request body in entity class as a request for p2p transfer
@@ -48,7 +52,8 @@ public class TransactionController {
         }
         Wallet payer = m.get(1), payee = m.get(2);
         int payerID = payer.getOwner(), payeeID = payee.getOwner(), amount = requestBody.getAmount();
-        PostValidator.p2pCreate(payer, payee, amount, walletService, transactionService);
+        PostValidator.p2pCreate(payer, payee, amount, walletService, transactionService, kafkaTemplate,
+                TOPIC);
         responseBody = new ResponseBody(
                 "Amount of Rs "+amount+" transferred from "+payerID+" to "+payeeID, "OK");
         return new ResponseEntity<>(responseBody, OK);

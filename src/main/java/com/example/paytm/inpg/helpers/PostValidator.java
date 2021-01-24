@@ -7,6 +7,8 @@ import com.example.paytm.inpg.entities.Wallet;
 import com.example.paytm.inpg.services.TransactionService;
 import com.example.paytm.inpg.services.UserService;
 import com.example.paytm.inpg.services.WalletService;
+import org.springframework.kafka.core.KafkaTemplate;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -122,7 +124,8 @@ public class PostValidator {
     }
 
     public static void p2pCreate(Wallet payer, Wallet payee, int amount, WalletService walletService,
-                                 TransactionService transactionService) {
+                                 TransactionService transactionService,
+                                 KafkaTemplate<String, Transaction> kafkaTemplate, String TOPIC) {
         // updating and saving payer and payee wallets after the transaction
         payer.setBalance(payer.getBalance() - amount);
         payee.setBalance(payee.getBalance() + amount);
@@ -139,5 +142,7 @@ public class PostValidator {
         transactionPayee.setStatus("Completed"); transactionPayee.setAmount(amount);
         transactionService.save(transactionPayer);
         transactionService.save(transactionPayee);
+        kafkaTemplate.send(TOPIC, transactionPayer);
+        kafkaTemplate.send(TOPIC, transactionPayee);
     }
 }
