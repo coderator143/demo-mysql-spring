@@ -1,11 +1,14 @@
 package com.example.paytm.inpg.helpers;
 
+import com.example.paytm.inpg.entities.Transaction;
+
 public class Constants {
 
     private static String WALLET_POST_MESSAGE = "";
     private static String WALLET_PUT_MESSAGE = "";
     private static String P2P_MESSAGE = "";
     private static String authToken = "";
+    private static Transaction PAYER = null, PAYEE = null;
 
     public static String getWalletPostMessage() {
         return WALLET_POST_MESSAGE;
@@ -37,5 +40,22 @@ public class Constants {
 
     public static void setAuthToken(String jwtToken) {
         authToken = jwtToken;
+    }
+
+
+    public static Transaction getPAYER() {
+        return PAYER;
+    }
+
+    public static void setPAYER(Transaction payer) {
+        PAYER = payer;
+    }
+
+    public static Transaction getPAYEE() {
+        return PAYEE;
+    }
+
+    public static void setPAYEE(Transaction payee) {
+        PAYEE = payee;
     }
 }

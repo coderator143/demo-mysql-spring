@@ -1,5 +1,7 @@
 package com.example.paytm.inpg.entities;
 
+import org.springframework.data.elasticsearch.annotations.Document;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,6 +9,7 @@ import javax.persistence.Id;
 
 // Transaction entity for transaction table
 @Entity
+@Document(indexName = "transaction", shards = 1)
 public class Transaction {
 
     private int id, withuser, amount, user;
