@@ -1,5 +1,6 @@
 package com.example.paytm.inpg.config;
 
+import com.example.paytm.inpg.entities.ElasticTransaction;
 import com.example.paytm.inpg.entities.Transaction;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -28,12 +29,12 @@ public class MyKafkaConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, Transaction> kafkaTemplate() {
+    public KafkaTemplate<String, ElasticTransaction> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 
     @Bean
-    public ConsumerFactory<String, Transaction> transactionConsumerFactory() {
+    public ConsumerFactory<String, ElasticTransaction> transactionConsumerFactory() {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
         config.put(ConsumerConfig.GROUP_ID_CONFIG, "group-json");
@@ -41,13 +42,14 @@ public class MyKafkaConfig {
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
 
         return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(),
-                new JsonDeserializer<>(Transaction.class));
+                new JsonDeserializer<>(ElasticTransaction.class));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Transaction>
+    public ConcurrentKafkaListenerContainerFactory<String, ElasticTransaction>
     concurrentKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Transaction> concurrentKafkaListenerContainerFactory =
+        ConcurrentKafkaListenerContainerFactory<String, ElasticTransaction>
+                concurrentKafkaListenerContainerFactory =
                 new ConcurrentKafkaListenerContainerFactory();
         concurrentKafkaListenerContainerFactory.setConsumerFactory(transactionConsumerFactory());
         return concurrentKafkaListenerContainerFactory;

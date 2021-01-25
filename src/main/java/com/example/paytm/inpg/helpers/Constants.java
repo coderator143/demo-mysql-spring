@@ -1,5 +1,6 @@
 package com.example.paytm.inpg.helpers;
 
+import com.example.paytm.inpg.entities.ElasticTransaction;
 import com.example.paytm.inpg.entities.Transaction;
 
 public class Constants {
@@ -8,7 +9,7 @@ public class Constants {
     private static String WALLET_PUT_MESSAGE = "";
     private static String P2P_MESSAGE = "";
     private static String authToken = "";
-    private static Transaction PAYER = null, PAYEE = null;
+    private static ElasticTransaction PAYER = null, PAYEE = null;
 
     public static String getWalletPostMessage() {
         return WALLET_POST_MESSAGE;
@@ -43,19 +44,19 @@ public class Constants {
     }
 
 
-    public static Transaction getPAYER() {
+    public static ElasticTransaction getPAYER() {
         return PAYER;
     }
 
-    public static void setPAYER(Transaction payer) {
+    public static void setPAYER(ElasticTransaction payer) {
         PAYER = payer;
     }
 
-    public static Transaction getPAYEE() {
+    public static ElasticTransaction getPAYEE() {
         return PAYEE;
     }
 
-    public static void setPAYEE(Transaction payee) {
+    public static void setPAYEE(ElasticTransaction payee) {
         PAYEE = payee;
     }
 }
