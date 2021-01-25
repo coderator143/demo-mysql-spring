@@ -125,7 +125,8 @@ public class PostValidator {
 
     public static void p2pCreate(Wallet payer, Wallet payee, int amount, WalletService walletService,
                                  TransactionService transactionService,
-                                 KafkaTemplate<String, Transaction> kafkaTemplate, String TOPIC) {
+                                 KafkaTemplate<String, Transaction> kafkaTemplate, String PAYER_TOPIC,
+                                 String PAYEE_TOPIC) {
         // updating and saving payer and payee wallets after the transaction
         payer.setBalance(payer.getBalance() - amount);
         payee.setBalance(payee.getBalance() + amount);
@@ -142,7 +143,7 @@ public class PostValidator {
         transactionPayee.setStatus("Completed"); transactionPayee.setAmount(amount);
         transactionService.save(transactionPayer);
         transactionService.save(transactionPayee);
-        kafkaTemplate.send(TOPIC, transactionPayer);
-        kafkaTemplate.send(TOPIC, transactionPayee);
+        kafkaTemplate.send(PAYER_TOPIC, transactionPayer);
+        kafkaTemplate.send(PAYEE_TOPIC, transactionPayee);
     }
 }

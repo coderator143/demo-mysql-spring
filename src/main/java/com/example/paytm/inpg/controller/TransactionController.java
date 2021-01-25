@@ -37,7 +37,8 @@ public class TransactionController {
     private Logger logger = Logger.getLogger(this.getClass().getName());
     @Autowired
     KafkaTemplate<String, Transaction> kafkaTemplate;
-    private static final String TOPIC = "Transaction-PUSH";
+    private static final String PAYER_TOPIC = "Transaction-payer-PUSH";
+    private static final String PAYEE_TOPIC = "Transaction-payee-PUSH";
 
     // basically calling CRUD methods of the service class and specifying the response to return
     // using transaction request body in entity class as a request for p2p transfer
@@ -53,7 +54,7 @@ public class TransactionController {
         Wallet payer = m.get(1), payee = m.get(2);
         int payerID = payer.getOwner(), payeeID = payee.getOwner(), amount = requestBody.getAmount();
         PostValidator.p2pCreate(payer, payee, amount, walletService, transactionService, kafkaTemplate,
-                TOPIC);
+                PAYER_TOPIC, PAYEE_TOPIC);
         responseBody = new ResponseBody(
                 "Amount of Rs "+amount+" transferred from "+payerID+" to "+payeeID, "OK");
         return new ResponseEntity<>(responseBody, OK);

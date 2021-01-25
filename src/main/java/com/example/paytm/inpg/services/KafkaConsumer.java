@@ -7,9 +7,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class KafkaConsumer {
 
-    @KafkaListener(topics = "Transaction-PUSH", groupId = "group_json",
+    @KafkaListener(topics = "Transaction-payer-PUSH", groupId = "group_json",
     containerFactory = "concurrentKafkaListenerContainerFactory")
-    public void consumeTransaction(Transaction transaction) {
-        System.out.println("Consumer JSON message : "+transaction);
+    public void consumePayerTransaction(Transaction payerTransaction) {
+        System.out.println(payerTransaction);
+    }
+
+    @KafkaListener(topics = "Transaction-payee-PUSH", groupId = "group_json",
+            containerFactory = "concurrentKafkaListenerContainerFactory")
+    public void consumePayeeTransaction(Transaction payeeTransaction) {
+        System.out.println(payeeTransaction);
     }
 }
