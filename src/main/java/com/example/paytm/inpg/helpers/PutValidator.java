@@ -2,7 +2,7 @@ package com.example.paytm.inpg.helpers;
 
 import com.example.paytm.inpg.entities.User;
 import com.example.paytm.inpg.entities.Wallet;
-import com.example.paytm.inpg.services.WalletService;
+import com.example.paytm.inpg.services.dataservice.WalletService;
 import java.util.List;
 
 // validating put requests for user controller

@@ -1,7 +1,7 @@
 package com.example.paytm.inpg.controller;
 
 import com.example.paytm.inpg.entities.User;
-import com.example.paytm.inpg.services.UserService;
+import com.example.paytm.inpg.services.dataservice.UserService;
 import com.example.paytm.inpg.helpers.PostValidator;
 import com.example.paytm.inpg.helpers.PutValidator;
 import org.springframework.beans.factory.annotation.Autowired;

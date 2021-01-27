@@ -1,4 +1,4 @@
-package com.example.paytm.inpg.services;
+package com.example.paytm.inpg.services.customservice;
 
 import com.example.paytm.inpg.entities.User;
 import com.example.paytm.inpg.repositories.UserRepository;

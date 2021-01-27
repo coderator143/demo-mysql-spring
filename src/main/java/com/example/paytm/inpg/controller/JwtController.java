@@ -4,7 +4,7 @@ import com.example.paytm.inpg.entities.ResponseBody;
 import com.example.paytm.inpg.entities.User;
 import com.example.paytm.inpg.helpers.Constants;
 import com.example.paytm.inpg.helpers.JwtUtil;
-import com.example.paytm.inpg.services.CustomUserDetailsService;
+import com.example.paytm.inpg.services.customservice.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,8 +15,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
 
 import static org.springframework.http.HttpStatus.OK;
 

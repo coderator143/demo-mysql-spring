@@ -5,8 +5,8 @@ import com.example.paytm.inpg.entities.ResponseBody;
 import com.example.paytm.inpg.helpers.Constants;
 import com.example.paytm.inpg.helpers.PostValidator;
 import com.example.paytm.inpg.repositories.ElasticTransactionRepository;
-import com.example.paytm.inpg.services.UserService;
-import com.example.paytm.inpg.services.WalletService;
+import com.example.paytm.inpg.services.dataservice.UserService;
+import com.example.paytm.inpg.services.dataservice.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,13 +14,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -71,11 +69,11 @@ public class ElasticTransactionController {
     }
 
     @GetMapping(value = "/elasticTransaction", params = "txnId")
-    public ResponseEntity<ResponseBody> get(@RequestParam("txnId") String id) {
+    public ResponseEntity<?> get(@RequestParam("txnId") String id) {
         ResponseBody responseBody;
         try {
             Optional<ElasticTransaction> existingTransaction = elasticTransactionRepository.findById(id);
-            responseBody = new ResponseBody("Read transaction successfully with id = "+id, "OK");
+            responseBody = new ResponseBody("Completed", "OK");
             logger.log(Level.INFO, "Read transaction successfully with id = "+id);
             return new ResponseEntity<>(responseBody, OK);
         }

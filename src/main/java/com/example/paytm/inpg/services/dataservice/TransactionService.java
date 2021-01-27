@@ -1,4 +1,4 @@
-package com.example.paytm.inpg.services;
+package com.example.paytm.inpg.services.dataservice;
 
 import com.example.paytm.inpg.entities.Transaction;
 import com.example.paytm.inpg.repositories.TransactionRepository;

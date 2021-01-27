@@ -1,7 +1,7 @@
 package com.example.paytm.inpg.config;
 
 import com.example.paytm.inpg.helpers.JwtUtil;
-import com.example.paytm.inpg.services.CustomUserDetailsService;
+import com.example.paytm.inpg.services.customservice.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

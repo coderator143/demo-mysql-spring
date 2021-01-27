@@ -1,9 +1,9 @@
 package com.example.paytm.inpg.helpers;
 
 import com.example.paytm.inpg.entities.*;
-import com.example.paytm.inpg.services.TransactionService;
-import com.example.paytm.inpg.services.UserService;
-import com.example.paytm.inpg.services.WalletService;
+import com.example.paytm.inpg.services.dataservice.TransactionService;
+import com.example.paytm.inpg.services.dataservice.UserService;
+import com.example.paytm.inpg.services.dataservice.WalletService;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.ArrayList;

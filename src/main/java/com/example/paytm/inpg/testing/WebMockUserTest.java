@@ -4,7 +4,7 @@ import static org.mockito.Mockito.when;
 import static org.junit.Assert.assertEquals;
 import com.example.paytm.inpg.entities.User;
 import com.example.paytm.inpg.repositories.UserRepository;
-import com.example.paytm.inpg.services.UserService;
+import com.example.paytm.inpg.services.dataservice.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
