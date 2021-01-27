@@ -1,12 +1,11 @@
 package com.example.paytm.inpg.helpers;
 
-import com.example.paytm.inpg.entities.Transaction;
-import com.example.paytm.inpg.entities.TransactionRequestBody;
-import com.example.paytm.inpg.entities.User;
-import com.example.paytm.inpg.entities.Wallet;
-import com.example.paytm.inpg.services.TransactionService;
-import com.example.paytm.inpg.services.UserService;
-import com.example.paytm.inpg.services.WalletService;
+import com.example.paytm.inpg.entities.*;
+import com.example.paytm.inpg.services.dataservice.TransactionService;
+import com.example.paytm.inpg.services.dataservice.UserService;
+import com.example.paytm.inpg.services.dataservice.WalletService;
+import org.springframework.kafka.core.KafkaTemplate;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -139,5 +138,29 @@ public class PostValidator {
         transactionPayee.setStatus("Completed"); transactionPayee.setAmount(amount);
         transactionService.save(transactionPayer);
         transactionService.save(transactionPayee);
+        //kafkaTemplate.send(PAYER_TOPIC, transactionPayer);
+        //kafkaTemplate.send(PAYEE_TOPIC, transactionPayee);
+    }
+
+    public static void p2pElasticCreate(Wallet payer, Wallet payee, int amount, WalletService walletService,
+                                        KafkaTemplate<String, ElasticTransaction> kafkaTemplate,
+                                        String PAYER_TOPIC, String PAYEE_TOPIC) {
+        // updating and saving payer and payee wallets after the transaction
+        payer.setBalance(payer.getBalance() - amount);
+        payee.setBalance(payee.getBalance() + amount);
+        walletService.save(payer); walletService.save(payee);
+        int payerID = payer.getOwner(), payeeID = payee.getOwner();
+
+        // creating and saving two transaction objects for payer and payee
+        ElasticTransaction transactionPayer = new ElasticTransaction(),
+                transactionPayee = new ElasticTransaction();
+        transactionPayer.setUser(payerID); transactionPayer.setWithuser(payeeID);
+        transactionPayer.setTime(System.currentTimeMillis()); transactionPayer.setMode("Payed");
+        transactionPayer.setStatus("Completed"); transactionPayer.setAmount(amount);
+        transactionPayee.setUser(payeeID); transactionPayee.setWithuser(payerID);
+        transactionPayee.setTime(System.currentTimeMillis()); transactionPayee.setMode("Received");
+        transactionPayee.setStatus("Completed"); transactionPayee.setAmount(amount);
+        kafkaTemplate.send(PAYER_TOPIC, transactionPayer);
+        kafkaTemplate.send(PAYEE_TOPIC, transactionPayee);
     }
 }

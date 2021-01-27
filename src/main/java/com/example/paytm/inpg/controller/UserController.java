@@ -1,7 +1,7 @@
 package com.example.paytm.inpg.controller;
 
 import com.example.paytm.inpg.entities.User;
-import com.example.paytm.inpg.services.UserService;
+import com.example.paytm.inpg.services.dataservice.UserService;
 import com.example.paytm.inpg.helpers.PostValidator;
 import com.example.paytm.inpg.helpers.PutValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +24,11 @@ public class UserController {
     private Logger logger = Logger.getLogger(this.getClass().getName());
 
     // basically calling CRUD methods of the service class and specifying the response to return
+    @GetMapping("/loginUser")
+    public String loginUser() {
+        return "User logged in";
+    }
+
     @GetMapping("/user")
     public List<User> list() {
         logger.log(Level.INFO, "list of all users returned");

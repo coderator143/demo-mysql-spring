@@ -1,21 +1,22 @@
 package com.example.paytm.inpg.entities;
 
-import javax.persistence.Entity;
+import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 // Transaction entity for transaction table
-@Entity
-public class Transaction {
+@Document(indexName = "transaction", shards = 1)
+public class ElasticTransaction {
 
     private int withuser, amount, user;
     private String id, mode, status;
     private long time;
 
-    public Transaction() {}
+    public ElasticTransaction() {}
 
-    public Transaction(String id, int withuser, String mode, String status, int amount, long time, int user) {
+    public ElasticTransaction(String id, int withuser, String mode, String status, int amount,
+                              long time, int user) {
         this.id = id;
         this.withuser = withuser;
         this.amount = amount;
@@ -83,3 +84,4 @@ public class Transaction {
         this.user = user;
     }
 }
+
