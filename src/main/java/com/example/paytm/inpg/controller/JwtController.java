@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -30,7 +33,7 @@ public class JwtController {
     @Autowired
     private JwtUtil jwtUtil;
 
-
+    private Logger logger = Logger.getLogger(this.getClass().getName());
 
     @PostMapping(value = "/generateToken")
     public ResponseEntity<?> generateToken(@RequestBody User user) throws Exception {
@@ -44,10 +47,12 @@ public class JwtController {
         }
         catch (UsernameNotFoundException e) {
             responseBody = new ResponseBody("Username not found", "Token generation failed");
+            logger.log(Level.INFO, responseBody.toString());
             return new ResponseEntity<>(responseBody, OK);
         }
         catch (BadCredentialsException e) {
             responseBody = new ResponseBody("Bad credentials", "Token generation failed");
+            logger.log(Level.INFO, responseBody.toString());
             return new ResponseEntity<>(responseBody, OK);
         }
 
@@ -55,6 +60,7 @@ public class JwtController {
         String token = this.jwtUtil.generateToken(userDetails);
         Constants.setAuthToken(token);
         responseBody = new ResponseBody(token, "user logged in");
+        logger.log(Level.INFO, responseBody.toString());
         return new ResponseEntity<>(responseBody, OK);
     }
 }
