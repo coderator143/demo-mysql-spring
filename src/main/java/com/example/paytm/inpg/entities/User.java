@@ -99,4 +99,19 @@ public class User {
     public void setHaswallet(boolean haswallet) {
         this.haswallet = haswallet;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", emailid='" + emailid + '\'' +
+                ", address1='" + address1 + '\'' +
+                ", address2='" + address2 + '\'' +
+                ", mobilenumber=" + mobilenumber +
+                ", haswallet=" + haswallet +
+                '}';
+    }
 }

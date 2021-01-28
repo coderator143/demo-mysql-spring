@@ -19,6 +19,8 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.util.logging.Level.INFO;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -45,7 +47,7 @@ public class ElasticTransactionController {
         Map<Integer, Wallet> m = PostValidator.p2pPost(requestBody, userService, walletService);
         ResponseBody responseBody;
         if(m.isEmpty()) {
-            logger.log(Level.INFO, Constants.getP2pMessage());
+            logger.log(INFO, Constants.getP2pMessage());
             responseBody = new ResponseBody(Constants.getP2pMessage(), "OK");
             return new ResponseEntity<>(responseBody, OK);
         }
@@ -61,7 +63,7 @@ public class ElasticTransactionController {
     @GetMapping(value = "/elasticTransaction", params = "userId")
     public Page<ElasticTransaction> getTransactionByUserID(@RequestParam("userId") Integer id,
                                                     @RequestParam("page") Integer page) {
-        logger.log(Level.INFO, "All transaction of user with id = "+id);
+        logger.log(INFO, "All transaction of user with id = "+id);
 
         // returning the list in a paginated and decreasing sorted way based on time
         return elasticTransactionRepository.findByUser(id, PageRequest.of(page, 3,
@@ -74,12 +76,12 @@ public class ElasticTransactionController {
         try {
             Optional<ElasticTransaction> existingTransaction = elasticTransactionRepository.findById(id);
             responseBody = new ResponseBody("Completed", "OK");
-            logger.log(Level.INFO, "Read transaction successfully with id = "+id);
+            logger.log(INFO, "Read transaction successfully with id = "+id);
             return new ResponseEntity<>(responseBody, OK);
         }
         catch (NoSuchElementException e) {
             responseBody = new ResponseBody("Cannot read nonexistent transaction", "Not found");
-            logger.log(Level.INFO, "Cannot read nonexistent transaction");
+            logger.log(INFO, "Cannot read nonexistent transaction");
             return new ResponseEntity<>(responseBody, NOT_FOUND);
         }
     }

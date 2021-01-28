@@ -35,4 +35,13 @@ public class TransactionRequestBody {
     public void setAmount(int amount) {
         this.amount = amount;
     }
+
+    @Override
+    public String toString() {
+        return "TransactionRequestBody{" +
+                "payer_phone_number=" + payer_phone_number +
+                ", payee_phone_number=" + payee_phone_number +
+                ", amount=" + amount +
+                '}';
+    }
 }

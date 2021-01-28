@@ -31,7 +31,7 @@ public class UserController {
 
     @GetMapping("/user")
     public List<User> list() {
-        logger.log(Level.INFO, "list of all users returned");
+        logger.log(Level.INFO, "list of all users returned ");
         return userService.listAll();
     }
 
