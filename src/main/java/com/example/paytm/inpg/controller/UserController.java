@@ -1,6 +1,7 @@
 package com.example.paytm.inpg.controller;
 
 import com.example.paytm.inpg.entities.User;
+import com.example.paytm.inpg.helpers.UtilityMethods;
 import com.example.paytm.inpg.services.dataservice.UserService;
 import com.example.paytm.inpg.helpers.PostValidator;
 import com.example.paytm.inpg.helpers.PutValidator;
@@ -31,7 +32,7 @@ public class UserController {
 
     @GetMapping("/user")
     public List<User> list() {
-        logger.log(Level.INFO, "list of all users returned");
+        logger.log(Level.INFO, "list of all users returned at "+ UtilityMethods.get_current_time());
         return userService.listAll();
     }
 
@@ -39,14 +40,13 @@ public class UserController {
     public ResponseEntity<?> get(@RequestParam("userId") Integer id) {
         try {
             User user = userService.get(id);
-            ResponseEntity<User> r = new ResponseEntity<>(user, OK);
-            logger.log(Level.INFO, "Read user successfully with id = "+id);
-            return r;
+            logger.log(Level.INFO, user.toString());
+            return new ResponseEntity<>(user, OK);
         }
         catch (NoSuchElementException e) {
-            logger.log(Level.INFO, "Cannot read nonexistent user");
             ResponseBody responseBody = new ResponseBody("Cannot read nonexistent user",
                     "Not found");
+            logger.log(Level.INFO, responseBody.toString());
             return new ResponseEntity<>(responseBody, NOT_FOUND);
         }
     }
@@ -56,12 +56,12 @@ public class UserController {
         String msg = PostValidator.postResponseMessage(user, userService);
         ResponseBody responseBody;
         if(msg != "") {
-            logger.log(Level.INFO, msg);
             responseBody = new ResponseBody(msg, "undesired input");
+            logger.log(Level.INFO, responseBody.toString());
             return new ResponseEntity<>(responseBody, OK);
         }
-        logger.log(Level.INFO, "User saved with id = "+user.getId());
         responseBody = new ResponseBody("User saved with id = "+user.getId(), "OK");
+        logger.log(Level.INFO, user.toString());
         userService.save(user);
         return new ResponseEntity<>(responseBody, OK);
     }
@@ -72,19 +72,19 @@ public class UserController {
         try {
             User existingUser = userService.get(id);
             if(!PutValidator.canBeUpdated(user, existingUser)) {
-                logger.log(Level.INFO, "Only email and address can be updated");
                 responseBody = new ResponseBody("Only email and address can be updated",
                         "undesired input");
+                logger.log(Level.INFO, responseBody.toString());
                 return new ResponseEntity<>(responseBody, OK);
             }
-            logger.log(Level.INFO, "Updated user successfully with id = "+id);
             responseBody = new ResponseBody("Updated user successfully with id = "+id, "OK");
+            logger.log(Level.INFO, user.toString());
             userService.save(user);
             return new ResponseEntity<>(responseBody, OK);
         }
         catch (NoSuchElementException e) {
-            logger.log(Level.INFO, "Cannot update nonexistent user");
             responseBody = new ResponseBody("Cannot update nonexistent user", "Not found");
+            logger.log(Level.INFO, responseBody.toString());
             return new ResponseEntity<>(responseBody, NOT_FOUND);
         }
     }
@@ -94,21 +94,21 @@ public class UserController {
         ResponseBody responseBody;
         try {
             User existingUser = userService.get(id);
-            logger.log(Level.INFO, "Deleted user successfully with id = "+id);
             responseBody = new ResponseBody("Deleted user successfully with id = "+id, "OK");
+            logger.log(Level.INFO, existingUser.toString() + "deleted");
             userService.delete(id);
             return new ResponseEntity<>(responseBody, OK);
         }
         catch (NoSuchElementException e) {
-            logger.log(Level.INFO, "Cannot delete nonexistent user");
             responseBody = new ResponseBody("Cannot delete nonexistent user", "Not found");
+            logger.log(Level.INFO, responseBody.toString());
             return new ResponseEntity<>(responseBody, NOT_FOUND);
         }
     }
 
     @DeleteMapping(value = "/user")
     public ResponseEntity<?> deleteAll() {
-        logger.log(Level.INFO, "all users deleted");
+        logger.log(Level.INFO, "all users deleted at "+UtilityMethods.get_current_time());
         ResponseBody responseBody = new ResponseBody("all users deleted", "OK");
         userService.deleteAll();
         return new ResponseEntity<>(responseBody, OK);

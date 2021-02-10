@@ -56,4 +56,14 @@ public class Wallet {
     public void setCreation(String creation) {
         this.creation = creation;
     }
+
+    @Override
+    public String toString() {
+        return "Wallet{" +
+                "id=" + id +
+                ", balance=" + balance +
+                ", owner=" + owner +
+                ", creation='" + creation + '\'' +
+                '}';
+    }
 }

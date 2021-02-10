@@ -10,9 +10,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 // validating post requests in controllers
 public class PostValidator {
+
+    private static Logger logger = Logger.getLogger("PostValidator");
+
     public static boolean isEmailValidated(String emailID, UserService userService) {
         return userService.findByEmailID(emailID).isEmpty();
     }
@@ -76,6 +81,7 @@ public class PostValidator {
         wallet.setCreation(UtilityMethods.get_current_time());
         wallet.setOwner(user.getId());
         userService.save(user);
+        logger.log(Level.INFO, wallet.toString());
         walletService.save(wallet);
         Constants.setWalletPostMessage("Wallet created");
     }
@@ -138,8 +144,6 @@ public class PostValidator {
         transactionPayee.setStatus("Completed"); transactionPayee.setAmount(amount);
         transactionService.save(transactionPayer);
         transactionService.save(transactionPayee);
-        //kafkaTemplate.send(PAYER_TOPIC, transactionPayer);
-        //kafkaTemplate.send(PAYEE_TOPIC, transactionPayee);
     }
 
     public static void p2pElasticCreate(Wallet payer, Wallet payee, int amount, WalletService walletService,
@@ -160,6 +164,8 @@ public class PostValidator {
         transactionPayee.setUser(payeeID); transactionPayee.setWithuser(payerID);
         transactionPayee.setTime(System.currentTimeMillis()); transactionPayee.setMode("Received");
         transactionPayee.setStatus("Completed"); transactionPayee.setAmount(amount);
+        logger.log(Level.INFO, transactionPayer.toString());
+        logger.log(Level.INFO, transactionPayee.toString());
         kafkaTemplate.send(PAYER_TOPIC, transactionPayer);
         kafkaTemplate.send(PAYEE_TOPIC, transactionPayee);
     }

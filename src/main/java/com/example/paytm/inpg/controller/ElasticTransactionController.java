@@ -4,6 +4,7 @@ import com.example.paytm.inpg.entities.*;
 import com.example.paytm.inpg.entities.ResponseBody;
 import com.example.paytm.inpg.helpers.Constants;
 import com.example.paytm.inpg.helpers.PostValidator;
+import com.example.paytm.inpg.helpers.UtilityMethods;
 import com.example.paytm.inpg.repositories.ElasticTransactionRepository;
 import com.example.paytm.inpg.services.dataservice.UserService;
 import com.example.paytm.inpg.services.dataservice.WalletService;
@@ -19,6 +20,8 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.util.logging.Level.INFO;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -45,7 +48,7 @@ public class ElasticTransactionController {
         Map<Integer, Wallet> m = PostValidator.p2pPost(requestBody, userService, walletService);
         ResponseBody responseBody;
         if(m.isEmpty()) {
-            logger.log(Level.INFO, Constants.getP2pMessage());
+            logger.log(INFO, Constants.getP2pMessage());
             responseBody = new ResponseBody(Constants.getP2pMessage(), "OK");
             return new ResponseEntity<>(responseBody, OK);
         }
@@ -61,7 +64,8 @@ public class ElasticTransactionController {
     @GetMapping(value = "/elasticTransaction", params = "userId")
     public Page<ElasticTransaction> getTransactionByUserID(@RequestParam("userId") Integer id,
                                                     @RequestParam("page") Integer page) {
-        logger.log(Level.INFO, "All transaction of user with id = "+id);
+        logger.log(INFO, "List of all transactions of user "+id+" returned at : "+
+                UtilityMethods.get_current_time());
 
         // returning the list in a paginated and decreasing sorted way based on time
         return elasticTransactionRepository.findByUser(id, PageRequest.of(page, 3,
@@ -74,12 +78,12 @@ public class ElasticTransactionController {
         try {
             Optional<ElasticTransaction> existingTransaction = elasticTransactionRepository.findById(id);
             responseBody = new ResponseBody("Completed", "OK");
-            logger.log(Level.INFO, "Read transaction successfully with id = "+id);
+            logger.log(INFO, existingTransaction.toString());
             return new ResponseEntity<>(responseBody, OK);
         }
         catch (NoSuchElementException e) {
             responseBody = new ResponseBody("Cannot read nonexistent transaction", "Not found");
-            logger.log(Level.INFO, "Cannot read nonexistent transaction");
+            logger.log(INFO, responseBody.toString());
             return new ResponseEntity<>(responseBody, NOT_FOUND);
         }
     }

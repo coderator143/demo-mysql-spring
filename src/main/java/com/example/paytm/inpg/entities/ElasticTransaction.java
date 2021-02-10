@@ -83,5 +83,18 @@ public class ElasticTransaction {
     public void setUser(int user) {
         this.user = user;
     }
+
+    @Override
+    public String toString() {
+        return "ElasticTransaction{" +
+                "withuser=" + withuser +
+                ", amount=" + amount +
+                ", user=" + user +
+                ", id='" + id + '\'' +
+                ", mode='" + mode + '\'' +
+                ", status='" + status + '\'' +
+                ", time=" + time +
+                '}';
+    }
 }
 
